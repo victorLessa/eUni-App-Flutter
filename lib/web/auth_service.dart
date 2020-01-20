@@ -10,9 +10,9 @@ class AuthService {
     });
     
     var result = await http.post(
-      'https://bdacf908.ngrok.io/api/signIn',         
+      'https://6f0398e3.ngrok.io/api/signIn',         
       body: data,
-      headers: {"Content-Type": "application/json"},);
+      headers: {"Content-Type": "application/json"});
     
     return result; 
   }
