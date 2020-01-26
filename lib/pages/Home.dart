@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
     final header = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text('UniVento', style: TextStyle(color: Colors.white, fontSize: 20.0),),
+        Text('UVENTO', style: TextStyle(color: Colors.white, fontSize: 20.0),),
         Row(
           children: <Widget>[
             Padding(
@@ -197,7 +197,36 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         )
-      )
-    );
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xFF102733),
+          ),
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)
+                ),
+                color: Color.fromRGBO(37, 116, 169, .5),
+                onPressed: () {},
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.home, color: Colors.yellow ),
+                    SizedBox(width: 10.0,),
+                    Text('Home', style: TextStyle(color: Colors.yellow),)  
+                  ],
+                )
+              ),
+              Icon(Icons.search, color: Colors.white),
+              Icon(Icons.star, color: Colors.white)
+            ],
+          )
+          )
+        )
+      );
   }
 }
