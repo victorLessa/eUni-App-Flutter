@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,6 +9,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  int _currentIndex = 0;
+  PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     padding(component) {
@@ -17,22 +31,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    final header = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Text('UVENTO', style: TextStyle(color: Colors.white, fontSize: 20.0),),
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Icon(Icons.notifications, color: Colors.white, size: 25.0,),
-            ),
-            Icon(Icons.crop_free, color: Colors.white, size: 25.0,),
-          ],
-        )
-      ],
-    );
-
     final profile = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,10 +39,18 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text('Victor Camara', style: TextStyle(color: Colors.white, fontSize: 20.0),),
+            SizedBox(
+              height: 5.0,
+            ),
             Text('FullStack Developer at BrasilCap', style: TextStyle(color: Colors.white, fontSize: 12.0), textAlign: TextAlign.left,)
           ],
         ),
-        Icon(Icons.account_circle, size: 40.0, color: Colors.white,)
+        CircleAvatar(
+          backgroundColor: Color(0xFFFAE072),
+          radius: 32,
+          backgroundImage: AssetImage('images/avatar.jpg'),
+        )
+        // Icon(Icons.account_circle, size: 40.0, color: Colors.white,)
       ],
     );
 
@@ -131,20 +137,23 @@ class _HomePageState extends State<HomePage> {
                       children: <Widget>[
                         Icon(Icons.schedule, size: 15.0, color: Colors.white,),
                         SizedBox(width: 5.0,),
-                        Text('Jun 12 2020', style: TextStyle(color: Colors.white))
+                        Text('Jun 12 2020', style: TextStyle(color: Colors.white, fontSize: 10.0)),
                       ],
                     ),
-                  Row(
-                      children: <Widget>[
-                        Icon(Icons.place, size: 15.0, color: Colors.white,),
-                        SizedBox(width: 5.0,),
-                        Text('Alcântara', style: TextStyle(color: Colors.white))
-                      ],
-                    )
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0),
+                    child: Row(
+                        children: <Widget>[
+                          Icon(Icons.place, size: 15.0, color: Colors.white,),
+                          SizedBox(width: 5.0,),
+                          Text('Alcântara', style: TextStyle(color: Colors.white, fontSize: 10.0))
+                        ],
+                      )
+                  )
                   ],
                 ),
             ),
-            Image(image: AssetImage('images/eletronic.jpg'), width: 150.0,)
+            Image(image: AssetImage('images/eletronic.jpg'), width: 160.0,)
           ],
         ),
         color: Color.fromRGBO(37, 116, 169, .5),
@@ -183,13 +192,11 @@ class _HomePageState extends State<HomePage> {
         ]
       );
     }
-    return Scaffold(
-      backgroundColor: Color(0xFF102733),
-      body: SingleChildScrollView(
+    Widget home() {
+      return SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              padding(header),
               padding(profile),
               padding(dataPicker()),
               padding(_allEvents()),
@@ -197,36 +204,61 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         )
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xFF102733),
-          ),
-          height: 60.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)
-                ),
-                color: Color.fromRGBO(37, 116, 169, .5),
-                onPressed: () {},
-                child: Row(
-                  children: <Widget>[
-                    Icon(Icons.home, color: Colors.yellow ),
-                    SizedBox(width: 10.0,),
-                    Text('Home', style: TextStyle(color: Colors.yellow),)  
-                  ],
-                )
-              ),
-              Icon(Icons.search, color: Colors.white),
-              Icon(Icons.star, color: Colors.white)
-            ],
-          )
-          )
-        )
       );
+    }
+    return Scaffold(
+      backgroundColor: Color(0xFF102733),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(37, 116, 169, .5),
+        title: Text('UVENTO'),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: Icon(Icons.notifications, color: Colors.white, size: 25.0,),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: Icon(Icons.crop_free, color: Colors.white, size: 25.0,),
+          )
+        ],
+      ),
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index);
+          },
+          children: <Widget>[
+            home(),
+            Container(color: Color(0xFF102733),),
+            Container(color: Color(0xFF102733),)
+          ],
+        ),
+      ),
+
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        onItemSelected: (index) {
+          setState(() => _currentIndex = index);
+          _pageController.jumpToPage(index);
+        },
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        backgroundColor: Color(0xFF102733),
+        items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            title: Text('Home', style: TextStyle(color: _currentIndex == 0 ? Colors.yellow : Colors.white), textAlign: TextAlign.center,),
+            icon: Icon(Icons.home, color: _currentIndex == 0 ? Colors.yellow : Colors.white,)
+          ),
+          BottomNavyBarItem(
+            title: Text('Search', style: TextStyle(color: _currentIndex == 1 ? Colors.yellow : Colors.white), textAlign: TextAlign.center,),
+            icon: Icon(Icons.search, color: _currentIndex == 1 ? Colors.yellow : Colors.white)
+          ),
+          BottomNavyBarItem(
+            title: Text('Favorite', style: TextStyle(color: _currentIndex == 2 ? Colors.yellow : Colors.white), textAlign: TextAlign.center,),
+            icon: Icon(Icons.star, color: _currentIndex == 2 ? Colors.yellow : Colors.white)
+          ),
+        ],
+      ),
+    );
   }
 }
