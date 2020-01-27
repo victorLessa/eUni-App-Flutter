@@ -210,6 +210,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color(0xFF102733),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(37, 116, 169, .5),
+        leading: Container(),
         title: Text('UVENTO'),
         actions: <Widget>[
           Padding(
