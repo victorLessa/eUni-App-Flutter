@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:eni/components/heroPost.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -120,49 +121,57 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget _cardEvent() {
-      return Card(
-        semanticContainer: true,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Eletronics', style: TextStyle(color: Colors.white),),
-                    SizedBox(height: 10.0,),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.schedule, size: 15.0, color: Colors.white,),
-                        SizedBox(width: 5.0,),
-                        Text('Jun 12 2020', style: TextStyle(color: Colors.white, fontSize: 10.0)),
-                      ],
-                    ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5.0),
-                    child: Row(
+      return InkWell(
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return DetailScreen();
+        })),
+        child: Hero(
+          tag: "imageHero", 
+          child: Card(
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('Eletronics', style: TextStyle(color: Colors.white),),
+                      SizedBox(height: 10.0,),
+                      Row(
                         children: <Widget>[
-                          Icon(Icons.place, size: 15.0, color: Colors.white,),
+                          Icon(Icons.schedule, size: 15.0, color: Colors.white,),
                           SizedBox(width: 5.0,),
-                          Text('Alcântara', style: TextStyle(color: Colors.white, fontSize: 10.0))
+                          Text('Jun 12 2020', style: TextStyle(color: Colors.white, fontSize: 10.0)),
                         ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                            children: <Widget>[
+                              Icon(Icons.place, size: 15.0, color: Colors.white,),
+                              SizedBox(width: 5.0,),
+                              Text('Alcântara', style: TextStyle(color: Colors.white, fontSize: 10.0))
+                            ],
+                          )
                       )
-                  )
-                  ],
+                    ],
+                  ),
                 ),
+                Image(image: AssetImage('images/eletronic.jpg'), width: 160.0,)
+              ],
             ),
-            Image(image: AssetImage('images/eletronic.jpg'), width: 160.0,)
-          ],
-        ),
-        color: Color.fromRGBO(37, 116, 169, .5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        elevation: 5,
-        margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0, bottom: 10.0),
-      );
+            color: Color.fromRGBO(37, 116, 169, .5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 5,
+            margin: EdgeInsets.only(left: 5.0, right: 5.0, top: 10.0, bottom: 10.0),
+          )
+        )
+      ); 
     }
 
     Widget _popularEvents() {
@@ -182,10 +191,10 @@ class _HomePageState extends State<HomePage> {
               scrollDirection: Axis.vertical,
               children: <Widget>[
                 _cardEvent(),
-                _cardEvent(),
-                _cardEvent(),
-                _cardEvent(),
-                _cardEvent(),
+                // _cardEvent(),
+                // _cardEvent(),
+                // _cardEvent(),
+                // _cardEvent(),
               ],
             )
           )
@@ -210,7 +219,6 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color(0xFF102733),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(37, 116, 169, .5),
-        leading: Container(),
         title: Text('UVENTO'),
         actions: <Widget>[
           Padding(
@@ -223,6 +231,37 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+      drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: const <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text(
+                  'Drawer Header',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.message),
+                title: Text('Messages'),
+              ),
+              ListTile(
+                leading: Icon(Icons.account_circle),
+                title: Text('Profile'),
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+              ),
+            ],
+          ),
+      ),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -231,8 +270,15 @@ class _HomePageState extends State<HomePage> {
           },
           children: <Widget>[
             home(),
+            Hero(
+              tag: "DemoTag",
+              child: Icon(
+                Icons.add,
+                size: 150.0,
+              ),
+            ),
             Container(color: Color(0xFF102733),),
-            Container(color: Color(0xFF102733),)
+            // Container(color: Color(0xFF102733),)
           ],
         ),
       ),
@@ -263,3 +309,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
