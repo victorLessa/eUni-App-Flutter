@@ -18,12 +18,14 @@ class _LoginState extends State<Login> {
   void topTapped(int index) {
     setState(() {
       topSelectedIndex = index;
-      pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
+
   void pageChanged(int index) {
     setState(() {
-      if(index == 0) {
+      if (index == 0) {
         _right = 140.0;
         _left = 0;
       } else {
@@ -33,56 +35,64 @@ class _LoginState extends State<Login> {
       topSelectedIndex = index;
     });
   }
+
   @override
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     Widget _tab() {
       return Container(
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(37, 116, 169, .5),
-          borderRadius: BorderRadius.circular(50.0)
-        ),
-        margin: EdgeInsets.only(left: 50.0, right: 50.0),
-        child: Stack(
-          children: <Widget>[
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 300,),
-              left: _left,
-              right: _right,
-              height: 48.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white70,
-                  borderRadius: BorderRadius.circular(50.0)
+          decoration: BoxDecoration(
+              color: Color.fromRGBO(37, 116, 169, .5),
+              borderRadius: BorderRadius.circular(50.0)),
+          margin: EdgeInsets.only(left: 50.0, right: 50.0),
+          child: Stack(
+            children: <Widget>[
+              AnimatedPositioned(
+                duration: Duration(
+                  milliseconds: 300,
+                ),
+                left: _left,
+                right: _right,
+                height: 48.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.circular(50.0)),
                 ),
               ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                FlatButton(
-                  onPressed: () {
-                    topTapped(0);
-                  },
-                  child: Text('Entrar', style: TextStyle(color: Colors.white),),
-                ),
-                FlatButton(
-                  onPressed: () {
-                    topTapped(1);
-                  },
-                  child: Text('Cadastrar', style: TextStyle(color: Colors.white),),
-                )
-              ],
-            ),
-          ],
-        )
-      );
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      topTapped(0);
+                    },
+                    child: Text(
+                      'Entrar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      topTapped(1);
+                    },
+                    child: Text(
+                      'Cadastrar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ));
     }
+
     return Scaffold(
       backgroundColor: Color(0xFF102733),
       body: Stack(
@@ -97,21 +107,17 @@ class _LoginState extends State<Login> {
                     height: 30.0,
                   ),
                   SizedBox(
-                    height: 300.0,
-                    child: PageView(
+                      height: 300.0,
+                      child: PageView(
                         scrollDirection: Axis.horizontal,
                         controller: pageController,
                         onPageChanged: (index) {
                           pageChanged(index);
                         },
-                        pageSnapping : true ,
-                        physics : BouncingScrollPhysics(),  
-                        children: <Widget>[
-                          CardLogin(),
-                          CardLogin()
-                        ],
-                      )
-                  )
+                        pageSnapping: true,
+                        physics: BouncingScrollPhysics(),
+                        children: <Widget>[CardLogin(), CardLogin()],
+                      ))
                 ],
               ),
             ),
