@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:eni/pages/CreateEvent.dart';
 
-Widget drawer() {
+Widget drawer(context) {
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
-      children: const <Widget>[
+      children: <Widget>[
         DrawerHeader(
           decoration: BoxDecoration(
             color: Colors.blue,
@@ -18,16 +19,13 @@ Widget drawer() {
           ),
         ),
         ListTile(
-          leading: Icon(Icons.message),
-          title: Text('Messages'),
-        ),
-        ListTile(
-          leading: Icon(Icons.account_circle),
-          title: Text('Profile'),
-        ),
-        ListTile(
-          leading: Icon(Icons.settings),
-          title: Text('Settings'),
+          leading: Icon(Icons.date_range),
+          title: const Text('Criar Evento'),
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => CreateEvent()));
+            // Navigator.pushReplacementNamed(context, '/createEvent');
+          },
         ),
       ],
     ),

@@ -19,7 +19,7 @@ class CardLoginState extends State<CardLogin> {
     _loading = false;
   }
 
-  signIn(email, password) async {
+  Future signIn(email, password) async {
     final result = await Auth.Authenticate().signIn(email, password);
     var body = json.decode(result.body);
     if (result.statusCode == 200) {
@@ -51,7 +51,6 @@ class CardLoginState extends State<CardLogin> {
       padding: EdgeInsets.all(10.0),
       child: component,
     );
-    ;
   }
 
   Widget _email() {
@@ -95,20 +94,24 @@ class CardLoginState extends State<CardLogin> {
     return SizedBox(
         width: double.infinity,
         child: FlatButton(
-          onPressed: () {
+          onPressed: () async {
             setState(() {
               _loading = true;
             });
             if (_formKey.currentState.validate()) {
-              signIn(_emailController.text, _passwordController.text);
+              await signIn(_emailController.text, _passwordController.text);
             }
             setState(() {
               _loading = false;
             });
           },
           child: _loading
-              ? CircularProgressIndicator(
-                  backgroundColor: Colors.white,
+              ? SizedBox(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.transparent,
+                  ),
+                  height: 20.0,
+                  width: 20.0,
                 )
               : Text(
                   'Entrar',

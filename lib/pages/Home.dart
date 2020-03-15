@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer: drawer(),
+      drawer: drawer(context),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
