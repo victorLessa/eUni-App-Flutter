@@ -12,10 +12,11 @@ class CardLoginState extends State<CardLogin> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  var _textSubmit = 'Entrar';
+  var _loading;
   @override
   void initState() {
     super.initState();
+    _loading = false;
   }
 
   signIn(email, password) async {
@@ -96,19 +97,23 @@ class CardLoginState extends State<CardLogin> {
         child: FlatButton(
           onPressed: () {
             setState(() {
-              _textSubmit = 'Carregando...';
+              _loading = true;
             });
             if (_formKey.currentState.validate()) {
               signIn(_emailController.text, _passwordController.text);
             }
             setState(() {
-              _textSubmit = 'Entrar';
+              _loading = false;
             });
           },
-          child: Text(
-            _textSubmit,
-            style: TextStyle(color: Colors.white),
-          ),
+          child: _loading
+              ? CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                )
+              : Text(
+                  'Entrar',
+                  style: TextStyle(color: Colors.white),
+                ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           color: Color.fromRGBO(37, 116, 169, .5),

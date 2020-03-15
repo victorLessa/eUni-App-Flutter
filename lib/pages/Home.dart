@@ -1,13 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:eni/components/heroPost.dart';
 import 'package:eni/controller/user.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:eni/controller/events.dart';
+import 'package:eni/ui/home/profileWidget.dart';
+import 'package:eni/ui/home/dataPickerWidget.dart';
+import 'package:eni/ui/home/allEvent.dart';
+import 'package:eni/ui/home/popularEvent.dart';
+import 'package:eni/ui/drawer/drawer.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,10 +22,16 @@ class _HomePageState extends State<HomePage> {
   PageController _pageController;
 
   var details;
-  Future<Response> startStore() async {
+  var selectedDayEvent;
+  var dateSelected;
+  Future<dynamic> startStore() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     return await User().details(token);
+  }
+
+  Future<dynamic> getEvents(date) async {
+    return await Events.getEventsByDate(date);
   }
 
   @override
@@ -32,6 +41,19 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         details = json.decode(result.body);
       });
+    });
+    var date = new DateTime.now();
+    getEvents(date.year.toString() +
+            '-' +
+            date.month.toString() +
+            '-' +
+            date.day.toString())
+        .then((result) {
+      setState(() {
+        selectedDayEvent = json.decode(result.body);
+      });
+    }).catchError((onError) {
+      return onError;
     });
     _pageController = PageController();
   }
@@ -51,200 +73,6 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    final profile = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              details != null ? details['username'] : '',
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              'FullStack Developer at BrasilCap',
-              style: TextStyle(color: Colors.white, fontSize: 12.0),
-              textAlign: TextAlign.left,
-            )
-          ],
-        ),
-        CircleAvatar(
-          backgroundColor: Color(0xFFFAE072),
-          radius: 32,
-          backgroundImage: AssetImage('images/avatar.jpg'),
-        )
-        // Icon(Icons.account_circle, size: 40.0, color: Colors.white,)
-      ],
-    );
-
-    Widget dataPicker() {
-      return DatePickerTimeline(
-        DateTime.now(),
-        height: 70.0,
-        monthTextStyle: TextStyle(color: Colors.white, fontSize: 10.0),
-        dateTextStyle: TextStyle(color: Colors.white),
-        dayTextStyle: TextStyle(color: Colors.white, fontSize: 10.0),
-        selectionColor: Color.fromRGBO(37, 116, 169, .5),
-        onDateChange: (date) {
-          // New date selected
-          print(date);
-        },
-      );
-    }
-
-    Widget _getEventWidget(icon, text) {
-      return Container(
-          margin: EdgeInsets.all(5.0),
-          width: 100.0,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  icon,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(text,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w800))
-              ],
-            ),
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(37, 116, 169, .5),
-            borderRadius: BorderRadius.circular(10),
-          ));
-    }
-
-    Widget _allEvents() {
-      return Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text('All events', style: TextStyle(color: Colors.white)),
-            ],
-          ),
-          Container(
-            height: 100.0,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                _getEventWidget(Icons.mic, 'Music'),
-                _getEventWidget(Icons.assignment_ind, 'Work'),
-                _getEventWidget(Icons.school, 'Education'),
-                _getEventWidget(Icons.tv, 'Cinema'),
-              ],
-            ),
-          )
-        ],
-      );
-    }
-
-    Widget _cardEvent(item) {
-      return InkWell(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return DetailScreen();
-              })),
-          child: Hero(
-              tag: item['id'],
-              child: Card(
-                semanticContainer: true,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            item['title'],
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.schedule,
-                                size: 15.0,
-                                color: Colors.white,
-                              ),
-                              SizedBox(
-                                width: 5.0,
-                              ),
-                              Text(item['date'],
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10.0)),
-                            ],
-                          ),
-                          Padding(
-                              padding: EdgeInsets.only(top: 5.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.place,
-                                    size: 15.0,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  Text(item['locale'],
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 10.0))
-                                ],
-                              ))
-                        ],
-                      ),
-                    ),
-                    Image(
-                      image: AssetImage('images/eletronic.jpg'),
-                      width: 160.0,
-                    )
-                  ],
-                ),
-                color: Color.fromRGBO(37, 116, 169, .5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
-                margin: EdgeInsets.only(
-                    left: 5.0, right: 5.0, top: 10.0, bottom: 10.0),
-              )));
-    }
-
-    Widget _popularEvents() {
-      return Column(children: <Widget>[
-        Row(children: <Widget>[
-          Text(
-            'Popular events',
-            style: TextStyle(color: Colors.white),
-          )
-        ]),
-        Container(
-            width: double.infinity,
-            height: 300.0,
-            child: ListView.builder(
-                itemCount: details['events'].length,
-                itemBuilder: (context, index) {
-                  return _cardEvent(details['events'][index]);
-                }))
-      ]);
-    }
-
     Widget home() {
       if (details == null) {
         return SpinKitRotatingCircle(
@@ -256,10 +84,21 @@ class _HomePageState extends State<HomePage> {
           child: SafeArea(
         child: Column(
           children: <Widget>[
-            padding(profile),
-            padding(dataPicker()),
-            padding(_allEvents()),
-            padding(_popularEvents()),
+            padding(profile(details)),
+            padding(dataPicker((date) async {
+              final dateFormatted = date.year.toString() +
+                  '-' +
+                  date.month.toString() +
+                  '-' +
+                  date.day.toString();
+              await getEvents(dateFormatted).then((result) {
+                setState(() {
+                  selectedDayEvent = json.decode(result.body);
+                });
+              });
+            })),
+            padding(allEvents()),
+            padding(popularEvents(selectedDayEvent)),
           ],
         ),
       ));
@@ -289,37 +128,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: const <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.message),
-              title: Text('Messages'),
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Profile'),
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-            ),
-          ],
-        ),
-      ),
+      drawer: drawer(),
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
