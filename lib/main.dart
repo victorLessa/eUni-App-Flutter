@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-// import 'package:eni/pages/Login.dart';
-// import 'package:eni/pages/loginV2.dart';
-// import 'package:eni/pages/LoginV3.dart';
-import 'package:eni/pages/Home.dart';
-import 'package:eni/pages/LoginV4.dart';
-import 'package:eni/pages/CreateEvent.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:eni/redux/app_store.dart';
+import 'package:eni/routes.dart';
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: true,
-    // Start the app with the "/" named route. In this case, the app starts
-    // on the FirstScreen widget.
-    initialRoute: '/',
-    routes: {
-      '/': (context) => Login(),
-      '/second': (context) => HomePage(),
-      '/createEvent': (context) => CreateEvent()
-    },
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StoreProvider(
+      store: appStore,
+      child: MaterialApp(
+          debugShowCheckedModeBanner: true,
+          // Start the app with the "/" named route. In this case, the app starts
+          // on the FirstScreen widget.
+          theme: ThemeData(fontFamily: 'Montserrat'),
+          initialRoute: '/',
+          routes: routes(context)),
+    );
+  }
 }
