@@ -30,10 +30,6 @@ class _HomePageState extends State<HomePage> {
     return await User().details(token);
   }
 
-  Future<dynamic> getEvents(date) async {
-    return await Events.getEventsByDate(date);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -41,19 +37,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         details = json.decode(result.body);
       });
-    });
-    var date = new DateTime.now();
-    getEvents(date.year.toString() +
-            '-' +
-            date.month.toString() +
-            '-' +
-            date.day.toString())
-        .then((result) {
-      setState(() {
-        selectedDayEvent = json.decode(result.body);
-      });
-    }).catchError((onError) {
-      return onError;
     });
     _pageController = PageController();
   }
@@ -74,29 +57,12 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget home() {
-      if (details == null) {
-        return SpinKitRotatingCircle(
-          color: Colors.white,
-          size: 50.0,
-        );
-      }
       return SingleChildScrollView(
           child: SafeArea(
         child: Column(
           children: <Widget>[
-            padding(profile(details)),
-            padding(dataPicker((date) async {
-              final dateFormatted = date.year.toString() +
-                  '-' +
-                  date.month.toString() +
-                  '-' +
-                  date.day.toString();
-              await getEvents(dateFormatted).then((result) {
-                setState(() {
-                  selectedDayEvent = json.decode(result.body);
-                });
-              });
-            })),
+            padding(profile(context, details)),
+            padding(dataPicker(context)),
             padding(allEvents()),
             padding(popularEvents(selectedDayEvent)),
           ],

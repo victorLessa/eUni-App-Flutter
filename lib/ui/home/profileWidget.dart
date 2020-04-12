@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:eni/redux/app_state.dart';
 
-Widget profile(details) {
+Widget profile(BuildContext context, details) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -8,18 +10,27 @@ Widget profile(details) {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            details != null ? details['username'] : '',
-            style: TextStyle(color: Colors.white, fontSize: 20.0),
+          StoreConnector<AppState, dynamic>(
+            builder: (context, details) {
+              return Text(
+                details['username'],
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              );
+            },
+            converter: (store) => store.state.details,
           ),
           SizedBox(
             height: 5.0,
           ),
-          Text(
-            'FullStack Developer at BrasilCap',
-            style: TextStyle(color: Colors.white, fontSize: 12.0),
-            textAlign: TextAlign.left,
-          )
+          StoreConnector<AppState, dynamic>(
+              builder: (context, details) {
+                return Text(
+                  details['course'] != null ? details['course'] : '',
+                  style: TextStyle(color: Colors.white, fontSize: 12.0),
+                  textAlign: TextAlign.left,
+                );
+              },
+              converter: (store) => store.state.details)
         ],
       ),
       CircleAvatar(

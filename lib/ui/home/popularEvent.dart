@@ -1,5 +1,7 @@
+import 'package:eni/redux/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:eni/components/heroPost.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 Widget _cardEvent(context, item) {
   return InkWell(
@@ -88,10 +90,15 @@ Widget popularEvents(selectedDayEvent) {
     Container(
         width: double.infinity,
         height: 300.0,
-        child: ListView.builder(
-            itemCount: selectedDayEvent.length,
-            itemBuilder: (context, index) {
-              return _cardEvent(context, selectedDayEvent[index]);
-            }))
+        child: StoreConnector<AppState, List>(
+            builder: (BuildContext context, list) {
+              return ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  return _cardEvent(context, list[index]);
+                },
+              );
+            },
+            converter: (store) => store.state.events)),
   ]);
 }

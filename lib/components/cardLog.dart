@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:eni/controller/authenticate.dart' as Auth;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'dart:convert';
+import 'package:eni/redux/app_actions.dart';
+import 'package:eni/redux/app_state.dart';
 
 class CardLogin extends StatefulWidget {
   @override
@@ -23,9 +25,8 @@ class CardLoginState extends State<CardLogin> {
     final result = await Auth.Authenticate().signIn(email, password);
     var body = json.decode(result.body);
     if (result.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', body['token']);
-      await prefs.setString('details', result.body);
+      StoreProvider.of<AppState>(context)
+          .dispatch({"type": SaveUser(), "data": body});
       Navigator.pushReplacementNamed(context, '/second');
       return;
     }
@@ -98,8 +99,9 @@ class CardLoginState extends State<CardLogin> {
             setState(() {
               _loading = true;
             });
-            if (_formKey.currentState.validate()) {
-              await signIn(_emailController.text, _passwordController.text);
+            if (true) {
+              // await signIn(_emailController.text, _passwordController.text);
+              await signIn('victordsgnr@gmail.com', '123');
             }
             setState(() {
               _loading = false;
