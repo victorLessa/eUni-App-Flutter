@@ -1,39 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:eni/controller/authenticate.dart' as Auth;
-import 'package:flutter_redux/flutter_redux.dart';
-import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:eni/web/auth_service.dart' as Auth;
 import 'package:eni/redux/app_actions.dart';
 import 'package:eni/redux/app_state.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'dart:convert';
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _repeatPasswordController = TextEditingController();
+  final _usernameController = TextEditingController();
   var obscureText = true;
-  var _loading = false;
+  var obscureRepeatPassword = true;
+
+  @override
   void initState() {
     super.initState();
   }
 
-  Future signIn(email, password) async {
-    final result = await Auth.Authenticate().signIn(email, password);
-    var body = json.decode(result.body);
-    if (result.statusCode == 200) {
-      StoreProvider.of<AppState>(context)
-          .dispatch({"type": SaveUser(), "data": body});
-      Navigator.pushReplacementNamed(context, '/second');
-      return;
-    }
-    showDialog(
+  Future<http.Response> register(
+      email, username, password, repeatPassword) async {
+    if (password != repeatPassword) {
+      return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(body['message']),
+            title: Text('Senhas não conferem'),
             actions: <Widget>[
               FlatButton(
                 child: Text('Fechar'),
@@ -43,7 +42,35 @@ class _LoginState extends State<Login> {
               )
             ],
           );
-        });
+        },
+      );
+    }
+    await Auth.AuthService.register(email, username, password)
+        .then((onValue) async {
+      var body = json.decode(onValue.body);
+      StoreProvider.of<AppState>(context)
+          .dispatch({"type": SaveUser(), "data": body});
+      Navigator.pushReplacementNamed(context, '/second');
+      return;
+    }).catchError((onError) {
+      return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(onError.message),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Fechar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    });
+    return null;
   }
 
   @override
@@ -67,7 +94,7 @@ class _LoginState extends State<Login> {
                       Row(
                         children: <Widget>[
                           Text(
-                            'Login',
+                            'Create Account',
                             style: TextStyle(fontSize: 20.0),
                           ),
                         ],
@@ -100,8 +127,20 @@ class _LoginState extends State<Login> {
                                 height: 10.0,
                               ),
                               TextFormField(
-                                obscureText: obscureText,
+                                controller: _usernameController,
+                                decoration: InputDecoration(
+                                  labelText: 'Username',
+                                ),
+                                validator: (value) {
+                                  if (value.trim().isEmpty) {
+                                    return 'Insira um usuário';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
                                 controller: _passwordController,
+                                obscureText: obscureText,
                                 decoration: InputDecoration(
                                   labelText: 'Password',
                                   suffixIcon: Padding(
@@ -120,7 +159,39 @@ class _LoginState extends State<Login> {
                                             : Icons.visibility,
                                         color: Colors.grey,
                                       ),
-                                    ),
+                                    ), // myIcon is a 48px-wide widget.
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value.trim().isEmpty) {
+                                    return 'Insira uma senha';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              TextFormField(
+                                controller: _repeatPasswordController,
+                                obscureText: obscureRepeatPassword,
+                                decoration: InputDecoration(
+                                  labelText: 'Repeat Password',
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsetsDirectional.only(
+                                        end: 0.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          obscureRepeatPassword =
+                                              !obscureRepeatPassword;
+                                        });
+                                      },
+                                      splashColor: Colors.transparent,
+                                      child: Icon(
+                                        obscureRepeatPassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: Colors.grey,
+                                      ),
+                                    ), // myIcon is a 48px-wide widget.
                                   ),
                                 ),
                                 validator: (value) {
@@ -136,21 +207,10 @@ class _LoginState extends State<Login> {
                               SizedBox(
                                 width: double.infinity,
                                 child: RaisedGradientButton(
-                                  child: _loading
-                                      ? SizedBox(
-                                          child: CircularProgressIndicator(
-                                            backgroundColor: Colors.transparent,
-                                            strokeWidth: 2.0,
-                                            valueColor: AlwaysStoppedAnimation(
-                                                Colors.white),
-                                          ),
-                                          height: 20.0,
-                                          width: 20.0,
-                                        )
-                                      : Text(
-                                          'Login',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                  child: Text(
+                                    'Create Account',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                   gradient: LinearGradient(
                                     colors: <Color>[
                                       Color.fromRGBO(125, 0, 179, 1),
@@ -158,26 +218,15 @@ class _LoginState extends State<Login> {
                                     ],
                                   ),
                                   onPressed: () async {
-                                    setState(() {
-                                      _loading = true;
-                                    });
                                     if (_formKey.currentState.validate()) {
-                                      await signIn(_emailController.text,
-                                          _passwordController.text);
+                                      await register(
+                                          _emailController.text,
+                                          _usernameController.text,
+                                          _passwordController.text,
+                                          _repeatPasswordController.text);
                                     }
-                                    setState(() {
-                                      _loading = false;
-                                    });
                                   },
                                 ),
-                              ),
-                              SizedBox(
-                                height: 50.0,
-                              ),
-                              Text(
-                                'Forgot Password?',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.w600),
                               ),
                             ],
                           ),
@@ -190,8 +239,11 @@ class _LoginState extends State<Login> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                              SizedBox(
+                                height: 50.0,
+                              ),
                               Text(
-                                "Don't have an account?",
+                                "Already have an account? ",
                                 textAlign: TextAlign.center,
                               ),
                               SizedBox(
@@ -199,12 +251,11 @@ class _LoginState extends State<Login> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Navigator.popAndPushNamed(
-                                      context, '/register');
+                                  Navigator.popAndPushNamed(context, '/');
                                 },
                                 splashColor: Colors.transparent,
                                 child: Text(
-                                  'Create Account',
+                                  'Login',
                                   style: TextStyle(
                                       color: Colors.purple,
                                       fontWeight: FontWeight.w600),
