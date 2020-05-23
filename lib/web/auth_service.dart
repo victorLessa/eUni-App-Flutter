@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:eni/web/events_service.dart';
 import 'package:http/http.dart' as http;
+import 'package:eni/envairoment.dart';
 
-final baseUrl = 'https://api-uni.herokuapp.com';
+final baseUrl = map['baseUrl'];
 
 class AuthService {
   static Future<http.Response> loginUser(String email, String password) async {
@@ -28,12 +28,8 @@ class AuthService {
     final response = await http.post('$baseUrl/users',
         body: data, headers: {"Content-Type": "application/json"});
     if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
       return response;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
       if (response.statusCode == 401) {
         final data = json.decode(response.body);
         throw Exception(data[0]['message']);
@@ -41,5 +37,6 @@ class AuthService {
         throw Exception('Internal server Error');
       }
     }
+    return response;
   }
 }

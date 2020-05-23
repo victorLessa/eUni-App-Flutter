@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:eni/redux/app_state.dart';
 
-Widget profile(BuildContext context, details) {
+Widget profile(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -14,7 +14,7 @@ Widget profile(BuildContext context, details) {
             builder: (context, details) {
               return Text(
                 details['username'],
-                style: TextStyle(color: Colors.white, fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0),
               );
             },
             converter: (store) => store.state.details,
@@ -25,8 +25,8 @@ Widget profile(BuildContext context, details) {
           StoreConnector<AppState, dynamic>(
               builder: (context, details) {
                 return Text(
-                  details['course'] != null ? details['course'] : '',
-                  style: TextStyle(color: Colors.white, fontSize: 12.0),
+                  details['course'] != null ? details['course'] : 'Sem curso',
+                  style: TextStyle(fontSize: 12.0),
                   textAlign: TextAlign.left,
                 );
               },

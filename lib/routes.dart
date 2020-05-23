@@ -8,7 +8,7 @@ Object routes(BuildContext context) {
   return {
     '/': (context) => Login(),
     '/register': (context) => Register(),
-    '/second': (context) => HomePage(),
+    '/home': (context) => HomePage(),
     '/createEvent': (context) => CreateEvent()
   };
 }

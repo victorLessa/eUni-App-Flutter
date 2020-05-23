@@ -18,13 +18,13 @@ Widget _getEventWidget(icon, text) {
             ),
             Text(text,
                 style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w800))
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600))
           ],
         ),
         borderRadius: BorderRadius.circular(10.0),
       ),
       decoration: BoxDecoration(
-        color: Color.fromRGBO(37, 116, 169, .5),
+        color: Color.fromRGBO(46, 13, 218, .5),
         borderRadius: BorderRadius.circular(10),
       ));
 }
@@ -35,7 +35,9 @@ Widget allEvents() {
     children: <Widget>[
       Row(
         children: <Widget>[
-          Text('All events', style: TextStyle(color: Colors.white)),
+          Text('All events',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
         ],
       ),
       Container(

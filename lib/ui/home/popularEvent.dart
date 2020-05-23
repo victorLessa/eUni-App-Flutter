@@ -69,7 +69,7 @@ Widget _cardEvent(context, item) {
                 )
               ],
             ),
-            color: Color.fromRGBO(37, 116, 169, .5),
+            color: Color.fromRGBO(46, 13, 218, .5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
@@ -79,12 +79,12 @@ Widget _cardEvent(context, item) {
           )));
 }
 
-Widget popularEvents(selectedDayEvent) {
+Widget popularEvents() {
   return Column(children: <Widget>[
     Row(children: <Widget>[
       Text(
         'Popular events',
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
       )
     ]),
     Container(

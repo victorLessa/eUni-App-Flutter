@@ -21,19 +21,20 @@ class _LoginState extends State<Login> {
   }
 
   Future signIn(email, password) async {
-    final result = await Auth.Authenticate().signIn(email, password);
-    var body = json.decode(result.body);
-    if (result.statusCode == 200) {
+    try {
+      final result = await Auth.Authenticate().signIn(email, password);
+      var body = json.decode(result.body);
+
       StoreProvider.of<AppState>(context)
           .dispatch({"type": SaveUser(), "data": body});
-      Navigator.pushReplacementNamed(context, '/second');
+      Navigator.pushReplacementNamed(context, '/home');
       return;
-    }
-    showDialog(
+    } catch (e) {
+      showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(body['message']),
+            title: Text('Error'),
             actions: <Widget>[
               FlatButton(
                 child: Text('Fechar'),
@@ -43,7 +44,9 @@ class _LoginState extends State<Login> {
               )
             ],
           );
-        });
+        },
+      );
+    }
   }
 
   @override
@@ -59,16 +62,23 @@ class _LoginState extends State<Login> {
                 ),
                 child: Padding(
                   padding: EdgeInsets.only(
-                      left: 50.0, right: 50.0, top: 150.0, bottom: 100.0),
+                      left: 50.0, right: 50.0, top: 100.0, bottom: 100.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Text(
-                            'Login',
-                            style: TextStyle(fontSize: 20.0),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                'Login',
+                                style: TextStyle(fontSize: 20.0),
+                              ),
+                              SizedBox(
+                                height: 50.0,
+                              )
+                            ],
                           ),
                         ],
                       ),
@@ -84,17 +94,17 @@ class _LoginState extends State<Login> {
                                 decoration: InputDecoration(
                                   labelText: 'Email Address',
                                 ),
-                                validator: (value) {
-                                  if (!RegExp(
-                                          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
-                                      .hasMatch(value)) {
-                                    return 'E-mail inserido não é valído';
-                                  }
-                                  if (value.trim().isEmpty) {
-                                    return 'Insira um email';
-                                  }
-                                  return null;
-                                },
+                                // validator: (value) {
+                                //   if (!RegExp(
+                                //           r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                                //       .hasMatch(value)) {
+                                //     return 'E-mail inserido não é valído';
+                                //   }
+                                //   if (value.trim().isEmpty) {
+                                //     return 'Insira um email';
+                                //   }
+                                //   return null;
+                                // },
                               ),
                               SizedBox(
                                 height: 10.0,
@@ -123,12 +133,12 @@ class _LoginState extends State<Login> {
                                     ),
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value.trim().isEmpty) {
-                                    return 'Insira uma senha';
-                                  }
-                                  return null;
-                                },
+                                // validator: (value) {
+                                //   if (value.trim().isEmpty) {
+                                //     return 'Insira uma senha';
+                                //   }
+                                //   return null;
+                                // },
                               ),
                               SizedBox(
                                 height: 20.0,
@@ -162,8 +172,8 @@ class _LoginState extends State<Login> {
                                       _loading = true;
                                     });
                                     if (_formKey.currentState.validate()) {
-                                      await signIn(_emailController.text,
-                                          _passwordController.text);
+                                      await signIn(
+                                          'victordsgnr@gmail.com', '123');
                                     }
                                     setState(() {
                                       _loading = false;

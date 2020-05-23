@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
+import 'package:eni/envairoment.dart';
 
-String baseUrl = 'https://api-uni.herokuapp.com';
+final baseUrl = map['baseUrl'];
 
 class UserService {
   static Future<http.Response> detailsService(String token) async {
