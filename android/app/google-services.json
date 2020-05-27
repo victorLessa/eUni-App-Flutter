@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "505560536663",
+    "firebase_url": "https://vue-pwa-tutorial-ef73c.firebaseio.com",
+    "project_id": "vue-pwa-tutorial-ef73c",
+    "storage_bucket": "vue-pwa-tutorial-ef73c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505560536663:android:61854d63123856f2e4f512",
+        "android_client_info": {
+          "package_name": "com.example.eni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505560536663-a255g1b4vpvv6b55ditqh08ku79tnrpk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4jUEFNGJn_dRbxvdQ3x-YQKA0g62owjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505560536663-a255g1b4vpvv6b55ditqh08ku79tnrpk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

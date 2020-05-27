@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'dart:convert';
 import 'package:eni/redux/app_actions.dart';
 import 'package:eni/redux/app_state.dart';
+import 'package:eni/firebase_notification_handler.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -11,6 +12,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  String _pathImg = '';
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -18,6 +21,26 @@ class _LoginState extends State<Login> {
   var _loading = false;
   void initState() {
     super.initState();
+    new FirebaseNotifications(person).setUpFirebase();
+  }
+
+  void person(String person) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Fechar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   Future signIn(email, password) async {
