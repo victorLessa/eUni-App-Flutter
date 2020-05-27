@@ -118,17 +118,17 @@ class _LoginState extends State<Login> {
                                 decoration: InputDecoration(
                                   labelText: 'Email Address',
                                 ),
-                                // validator: (value) {
-                                //   if (!RegExp(
-                                //           r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
-                                //       .hasMatch(value)) {
-                                //     return 'E-mail inserido não é valído';
-                                //   }
-                                //   if (value.trim().isEmpty) {
-                                //     return 'Insira um email';
-                                //   }
-                                //   return null;
-                                // },
+                                validator: (value) {
+                                  if (!RegExp(
+                                          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                                      .hasMatch(value)) {
+                                    return 'E-mail inserido não é valído';
+                                  }
+                                  if (value.trim().isEmpty) {
+                                    return 'Insira um email';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(
                                 height: 10.0,
@@ -157,12 +157,12 @@ class _LoginState extends State<Login> {
                                     ),
                                   ),
                                 ),
-                                // validator: (value) {
-                                //   if (value.trim().isEmpty) {
-                                //     return 'Insira uma senha';
-                                //   }
-                                //   return null;
-                                // },
+                                validator: (value) {
+                                  if (value.trim().isEmpty) {
+                                    return 'Insira uma senha';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(
                                 height: 20.0,
@@ -196,8 +196,8 @@ class _LoginState extends State<Login> {
                                       _loading = true;
                                     });
                                     if (_formKey.currentState.validate()) {
-                                      await signIn(
-                                          'victordsgnr@gmail.com', '123');
+                                      await signIn(_emailController.text,
+                                          _passwordController.text);
                                     }
                                     setState(() {
                                       _loading = false;
