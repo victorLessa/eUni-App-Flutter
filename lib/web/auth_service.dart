@@ -11,9 +11,13 @@ class AuthService {
       "email": email.trim().toLowerCase(),
       "password": password,
     });
-
-    var result = await http.post('$baseUrl/signIn',
-        body: data, headers: {"Content-Type": "application/json"});
+    var result;
+    try {
+      result = await http.post('$baseUrl/signIn',
+          body: data, headers: {"Content-Type": "application/json"});
+    } catch (e) {
+      throw Exception(e);
+    }
 
     return result;
   }

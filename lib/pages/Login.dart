@@ -44,20 +44,21 @@ class _LoginState extends State<Login> {
   }
 
   Future signIn(email, password) async {
-    try {
-      final result = await Auth.Authenticate().signIn(email, password);
+    final result = await Auth.Authenticate().signIn(email, password);
+    if (result.statusCode == 200) {
       var body = json.decode(result.body);
 
       StoreProvider.of<AppState>(context)
           .dispatch({"type": SaveUser(), "data": body});
       Navigator.pushReplacementNamed(context, '/home');
-      return;
-    } catch (e) {
+    } else {
+      var body = json.decode(result.body);
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Error'),
+            content: Text(body['message']),
             actions: <Widget>[
               FlatButton(
                 child: Text('Fechar'),
